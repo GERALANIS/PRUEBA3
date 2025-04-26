@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Registro de Citas - Clínica Odontológica</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #eef2f7;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .container {
+      background: #ffffff;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      width: 90%;
+      max-width: 400px;
+    }
+    h2 {
+      text-align: center;
+      color: #3498db;
+      margin-bottom: 1rem;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      font-size: 1rem;
+    }
+    button {
+      background-color: #3498db;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    button:hover {
+      background-color: #2980b9;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Registro de Cita</h2>
+  <form id="formCita">
+    <input type="text" id="nombre" placeholder="Nombre completo" required>
+    <input type="email" id="correo" placeholder="Correo electrónico" required>
+    <input type="tel" id="telefono" placeholder="Teléfono" required>
+    <input type="date" id="fecha" required>
+    <textarea id="motivo" placeholder="Motivo de la cita" rows="3" required></textarea>
+    <button type="submit">Registrar Cita</button>
+  </form>
+</div>
+
+<!-- Firebase -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+  import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyCDgyqCgpXDAiDggNlZ6bzOTa2HGCR5kOQ",
+    authDomain: "prueba3-3e1a8.firebaseapp.com",
+    projectId: "prueba3-3e1a8",
+    storageBucket: "prueba3-3e1a8.appspot.com",
+    messagingSenderId: "776174057521",
+    appId: "1:776174057521:web:1ff7bd2696254204093d10"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  const formCita = document.getElementById('formCita');
+
+  formCita.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const nombre = document.getElementById('nombre').value.trim();
+    const correo = document.getElementById('correo').value.trim();
+    const telefono = document.getElementById('telefono').value.trim();
+    const fecha = document.getElementById('fecha').value;
+    const motivo = document.getElementById('motivo').value.trim();
+
+    try {
+      await addDoc(collection(db, "citas"), {
+        nombre,
+        correo,
+        telefono,
+        fecha,
+        motivo
+      });
+      alert('✅ Cita registrada exitosamente.');
+      formCita.reset();
+    } catch (error) {
+      console.error('❌ Error al registrar cita:', error);
+      alert('Hubo un error al registrar la cita. Inténtalo de nuevo.');
+    }
+  });
+</script>
+
+</body>
+</html>
